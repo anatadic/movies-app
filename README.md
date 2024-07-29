@@ -1,1 +1,1 @@
-# movies-app
+# React + TypeScript + Vite
