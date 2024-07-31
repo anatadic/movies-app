@@ -8,6 +8,7 @@ import {
   Segment,
   Image,
   List,
+  Label,
 } from 'semantic-ui-react';
 import { fetchMovieDetails } from './query';
 
@@ -62,8 +63,42 @@ export const Movie = () => {
                 <List.Item>
                   <List.Header>Genres: </List.Header>
                   {data.genres.map((genre: any) => (
-                    <List.Item key={genre.id}> {genre.name} </List.Item>
+                    <Label key={genre.id}> {genre.name} </Label>
                   ))}
+                </List.Item>
+                <List.Item>
+                  <List.Header>IMDB ID: </List.Header>
+                  {data.imdb_id}
+                </List.Item>
+                <List.Item>
+                  <List.Header>Popularity: </List.Header>
+                  {data.popularity}
+                </List.Item>
+                <List.Item>
+                  <List.Header>Production Companies: </List.Header>
+                  {data.production_companies
+                    .map((company: any) => company.name)
+                    .join(', ')}
+                  <List.Item>
+                    <List.Header>Release Date:</List.Header>
+                    {data.release_date}
+                  </List.Item>
+                  <List.Item>
+                    <List.Header>Revenue:</List.Header>
+                    {data.revenue}
+                  </List.Item>
+                  <List.Item>
+                    <List.Header>Runtime:</List.Header>
+                    {data.runtime}
+                  </List.Item>
+                  <List.Item>
+                    <List.Header>Vote avergae:</List.Header>
+                    {data.vote_average}
+                  </List.Item>{' '}
+                  <List.Item>
+                    <List.Header>Language:</List.Header>
+                    {data.original_language}
+                  </List.Item>
                 </List.Item>
               </List>
             </Grid.Column>

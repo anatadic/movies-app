@@ -3,7 +3,8 @@ import { Button } from 'semantic-ui-react';
 import { ColumnDisplay } from './column-display';
 
 import { fetchMovies, fetchTVShows } from './query';
-import { useQueries, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import { Navigate } from 'react-router-dom';
 
 export enum DisplayType {
   Movies = 'movies',
@@ -23,6 +24,10 @@ export const Home = () => {
     queryKey: ['tvshows'],
     queryFn: fetchTVShows,
   });
+
+  if (localStorage.getItem('guest_session_id') === null) {
+    return <Navigate to="/auth" />;
+  }
 
   return (
     <div style={{ marginTop: 50, height: 'auto' }}>
@@ -49,11 +54,13 @@ export const Home = () => {
             <ColumnDisplay
               data={movieData.results}
               displayType={DisplayType.Movies}
+              isRated={false}
             />
           ) : (
             <ColumnDisplay
               data={tvShowData.results}
               displayType={DisplayType.TVShows}
+              isRated={false}
             />
           )}
         </div>
