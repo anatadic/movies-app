@@ -36,6 +36,10 @@ export const ColumnDisplay = (props: Props) => {
   const rate =
     displayType === DisplayType.Movies ? rateMovieMutation : rateTvShowMutation;
 
+  if (!data?.length) {
+    return <p>No data to show</p>;
+  }
+
   return (
     <Grid
       columns={3}
