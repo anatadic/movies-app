@@ -1,28 +1,11 @@
 import { Form, Card, Grid, GridColumn, Label } from 'semantic-ui-react';
-import { DisplayType } from '.';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { rateMovie, rateTvShow } from './mutation';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-interface DisplayData {
-  id: number;
-  overview: string;
-  poster_path: string;
-  title?: string;
-  name?: string;
-  vote_average: number;
-  release_date: string;
-  rating?: number;
-}
-
-interface Props {
-  data: DisplayData[];
-  displayType: DisplayType;
-  isRated: boolean;
-}
+import { DisplayData, DisplayType, Props } from './types';
 
 export const ColumnDisplay = (props: Props) => {
   const { data, displayType, isRated } = props;

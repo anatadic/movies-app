@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Container, Header, Loader, Menu, Segment } from 'semantic-ui-react';
-import { DisplayType } from '../home';
 import { useQuery } from '@tanstack/react-query';
 import { fetchRatedMovies, fetchRatedTvShows } from './query';
 import { ColumnDisplay } from '../home/column-display';
 import { Navigate } from 'react-router-dom';
+import { DisplayType } from '../home/types';
 
 export const Rated = () => {
   const [activeTabs, setActiveTabs] = useState<DisplayType>(DisplayType.Movies);
