@@ -33,8 +33,16 @@ export const ColumnDisplay = (props: Props) => {
     onError,
   });
 
-  const rate =
-    displayType === DisplayType.Movies ? rateMovieMutation : rateTvShowMutation;
+  const rate = (id: number) => {
+    if (rating < 1 || rating > 10) {
+      toast.error('Rating must be between 1 and 10');
+      return;
+    }
+
+    displayType === DisplayType.Movies
+      ? rateMovieMutation(id)
+      : rateTvShowMutation(id);
+  };
 
   if (!data?.length) {
     return <p>No data to show</p>;
