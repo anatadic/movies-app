@@ -30,24 +30,26 @@ export const Home = () => {
     queryFn: fetchTVShows,
   });
 
-  const { mutate: searchMovieMutation, data: searchMovieData } = useMutation({
+  const { mutate: searchMovieMutation } = useMutation({
     mutationKey: ['searchMovie'],
     mutationFn: () => searchMovies(searchItem),
+    onSuccess: (searchMovieData) => setMovies(searchMovieData.results),
   });
 
-  const { mutate: searchTvShowMutation, data: searchTvShowData } = useMutation({
+  const { mutate: searchTvShowMutation } = useMutation({
     mutationKey: ['searchTVShow'],
     mutationFn: () => searchTVShows(searchItem),
+    onSuccess: (searchTvShowData) => setTvShows(searchTvShowData.results),
   });
 
-  const handleSearch = async () => {
+  const handleSearch = () => {
+    if (!searchItem) {
+      return;
+    }
+
     displayType === DisplayType.Movies
       ? searchMovieMutation()
       : searchTvShowMutation();
-
-    displayType === DisplayType.Movies
-      ? setMovies(searchMovieData?.results)
-      : setTvShows(searchTvShowData?.results);
   };
 
   useEffect(() => {
