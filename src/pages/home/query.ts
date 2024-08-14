@@ -1,6 +1,6 @@
-export const fetchMovies = async () => {
+export const fetchMovies = async (page: number) => {
   const res = await fetch(
-    'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1',
+    `https://api.themoviedb.org/3/movie/popular?language=en-US&page=${page}`,
     {
       headers: {
         Authorization: `Bearer ${import.meta.env.VITE_AUTH_TOKEN}`,
@@ -11,9 +11,9 @@ export const fetchMovies = async () => {
   return res.json();
 };
 
-export const fetchTVShows = async () => {
+export const fetchTVShows = async (page: number) => {
   const res = await fetch(
-    'https://api.themoviedb.org/3/tv/popular?language=en-US&page=1',
+    `https://api.themoviedb.org/3/tv/popular?language=en-US&page=${page}`,
     {
       headers: {
         Authorization: `Bearer ${import.meta.env.VITE_AUTH_TOKEN}`,
