@@ -8,7 +8,7 @@ import {
   searchMovies,
   searchTVShows,
 } from './query';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { Navigate } from 'react-router-dom';
 import { DisplayData, DisplayType } from './types';
 
@@ -19,15 +19,18 @@ export const Home = () => {
   const [searchItem, setSearchItem] = useState('');
   const [movies, setMovies] = useState<DisplayData[]>([]);
   const [tvShows, setTvShows] = useState<DisplayData[]>([]);
+  const [page, setPage] = useState<number>(1);
 
-  const { data: movieData, isLoading: isLoadingMovies } = useQuery({
-    queryKey: ['movies'],
-    queryFn: fetchMovies,
+  const { mutate: movieMutation, isPending: isLoadingMovies } = useMutation({
+    mutationKey: ['movies'],
+    mutationFn: () => fetchMovies(page),
+    onSuccess: (movieData) => setMovies(movieData.results),
   });
 
-  const { data: tvShowData, isLoading: isLoadingTvShows } = useQuery({
-    queryKey: ['tvshows'],
-    queryFn: fetchTVShows,
+  const { mutate: tvShowMutation, isPending: isLoadingTvShows } = useMutation({
+    mutationKey: ['tvshows'],
+    mutationFn: () => fetchTVShows(page),
+    onSuccess: (tvShowData) => setTvShows(tvShowData.results),
   });
 
   const { mutate: searchMovieMutation } = useMutation({
@@ -42,6 +45,18 @@ export const Home = () => {
     onSuccess: (searchTvShowData) => setTvShows(searchTvShowData.results),
   });
 
+  const handleNextPage = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (page === 1) {
+      return;
+    }
+
+    setPage((prevPage) => prevPage - 1);
+  };
+
   const handleSearch = () => {
     if (!searchItem) {
       return;
@@ -52,12 +67,17 @@ export const Home = () => {
       : searchTvShowMutation();
   };
 
+  const handleSetDisplayType = (displayType: DisplayType) => {
+    setDisplayType(displayType);
+    setPage(1);
+  };
+
   useEffect(() => {
     if (!searchItem) {
-      setMovies(movieData?.results);
-      setTvShows(tvShowData?.results);
+      movieMutation();
+      tvShowMutation();
     }
-  }, [searchItem, movieData, tvShowData]);
+  }, [searchItem, page]);
 
   if (localStorage.getItem('guest_session_id') === null) {
     return <Navigate to="/auth" />;
@@ -86,14 +106,14 @@ export const Home = () => {
         <Button.Group>
           <Button
             color={displayType === DisplayType.Movies ? 'blue' : undefined}
-            onClick={() => setDisplayType(DisplayType.Movies)}
+            onClick={() => handleSetDisplayType(DisplayType.Movies)}
           >
             Movies
           </Button>
 
           <Button
             color={displayType === DisplayType.TVShows ? 'blue' : undefined}
-            onClick={() => setDisplayType(DisplayType.TVShows)}
+            onClick={() => handleSetDisplayType(DisplayType.TVShows)}
           >
             TV Shows
           </Button>
@@ -103,21 +123,27 @@ export const Home = () => {
       {isLoadingMovies || isLoadingTvShows ? (
         <div> Loading... </div>
       ) : (
-        <div style={{ marginTop: 20 }}>
-          {displayType === DisplayType.Movies ? (
-            <ColumnDisplay
-              data={movies}
-              displayType={DisplayType.Movies}
-              isRated={false}
-            />
-          ) : (
-            <ColumnDisplay
-              data={tvShows}
-              displayType={DisplayType.TVShows}
-              isRated={false}
-            />
-          )}
-        </div>
+        <>
+          <div style={{ marginTop: 20 }}>
+            {displayType === DisplayType.Movies ? (
+              <ColumnDisplay
+                data={movies}
+                displayType={DisplayType.Movies}
+                isRated={false}
+              />
+            ) : (
+              <ColumnDisplay
+                data={tvShows}
+                displayType={DisplayType.TVShows}
+                isRated={false}
+              />
+            )}
+          </div>
+          <div>
+            <Button onClick={handlePreviousPage}>Previous</Button>
+            <Button onClick={handleNextPage}>Next</Button>
+          </div>
+        </>
       )}
     </div>
   );
